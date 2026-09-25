@@ -10,33 +10,465 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AutomationsIndexRouteImport } from './routes/automations.index'
+import { Route as AutomationsSlugRouteImport } from './routes/automations.$slug'
+import { Route as CheckoutIndexRouteImport } from './routes/checkout.index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated.admin.analytics'
+import { Route as AuthenticatedAdminAutomationsRouteImport } from './routes/_authenticated.admin.automations'
+import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authenticated.admin.catalog'
+import { Route as AuthenticatedAdminCreatorRouteImport } from './routes/_authenticated.admin.creator'
+import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated.admin.crm'
+import { Route as AuthenticatedAdminInfrastructureRouteImport } from './routes/_authenticated.admin.infrastructure'
+import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated.admin.knowledge'
+import { Route as AuthenticatedAdminLifecycleRouteImport } from './routes/_authenticated.admin.lifecycle'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated.admin.orders'
+import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated.admin.pricing'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated.admin.settings'
+import { Route as AuthenticatedAdminTeamRouteImport } from './routes/_authenticated.admin.team'
+import { Route as AuthenticatedAdminVerificationRouteImport } from './routes/_authenticated.admin.verification'
+import { Route as AuthenticatedCheckoutSlugRouteImport } from './routes/_authenticated.checkout.$slug'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated.dashboard.index'
+import { Route as AuthenticatedDashboardPaymentsRouteImport } from './routes/_authenticated.dashboard.payments'
+import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated.dashboard.profile'
+import { Route as AuthenticatedStaffPaymentsRouteImport } from './routes/_authenticated.staff.payments'
+import { Route as AuthenticatedDashboardAutomationsIndexRouteImport } from './routes/_authenticated.dashboard.automations.index'
+import { Route as AuthenticatedDashboardAutomationsIdRouteImport } from './routes/_authenticated.dashboard.automations.$id'
+import { Route as ApiPublicHooksLifecycleRouteImport } from './routes/api/public/hooks/lifecycle'
+import { Route as ApiPublicWidgetChatRouteImport } from './routes/api/public/widget/chat'
+import { Route as ApiPublicWidgetConfigRouteImport } from './routes/api/public/widget/config'
+import { Route as ApiPublicWidgetScriptRouteImport } from './routes/api/public/widget/script'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AutomationsIndexRoute = AutomationsIndexRouteImport.update({
+  id: '/automations/',
+  path: '/automations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationsSlugRoute = AutomationsSlugRouteImport.update({
+  id: '/automations/$slug',
+  path: '/automations/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAutomationsRoute =
+  AuthenticatedAdminAutomationsRouteImport.update({
+    id: '/automations',
+    path: '/automations',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCatalogRoute =
+  AuthenticatedAdminCatalogRouteImport.update({
+    id: '/catalog',
+    path: '/catalog',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCreatorRoute =
+  AuthenticatedAdminCreatorRouteImport.update({
+    id: '/creator',
+    path: '/creator',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminInfrastructureRoute =
+  AuthenticatedAdminInfrastructureRouteImport.update({
+    id: '/infrastructure',
+    path: '/infrastructure',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminKnowledgeRoute =
+  AuthenticatedAdminKnowledgeRouteImport.update({
+    id: '/knowledge',
+    path: '/knowledge',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminLifecycleRoute =
+  AuthenticatedAdminLifecycleRouteImport.update({
+    id: '/lifecycle',
+    path: '/lifecycle',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPricingRoute =
+  AuthenticatedAdminPricingRouteImport.update({
+    id: '/pricing',
+    path: '/pricing',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTeamRoute = AuthenticatedAdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminVerificationRoute =
+  AuthenticatedAdminVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedCheckoutSlugRoute =
+  AuthenticatedCheckoutSlugRouteImport.update({
+    id: '/checkout/$slug',
+    path: '/checkout/$slug',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPaymentsRoute =
+  AuthenticatedDashboardPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardProfileRoute =
+  AuthenticatedDashboardProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedStaffPaymentsRoute =
+  AuthenticatedStaffPaymentsRouteImport.update({
+    id: '/staff/payments',
+    path: '/staff/payments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardAutomationsIndexRoute =
+  AuthenticatedDashboardAutomationsIndexRouteImport.update({
+    id: '/automations/',
+    path: '/automations/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAutomationsIdRoute =
+  AuthenticatedDashboardAutomationsIdRouteImport.update({
+    id: '/automations/$id',
+    path: '/automations/$id',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const ApiPublicHooksLifecycleRoute = ApiPublicHooksLifecycleRouteImport.update({
+  id: '/api/public/hooks/lifecycle',
+  path: '/api/public/hooks/lifecycle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWidgetChatRoute = ApiPublicWidgetChatRouteImport.update({
+  id: '/api/public/widget/chat',
+  path: '/api/public/widget/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWidgetConfigRoute = ApiPublicWidgetConfigRouteImport.update({
+  id: '/api/public/widget/config',
+  path: '/api/public/widget/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWidgetScriptRoute = ApiPublicWidgetScriptRouteImport.update({
+  id: '/api/public/widget/script',
+  path: '/api/public/widget/script',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/security': typeof SecurityRoute
+  '/status': typeof StatusRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/automations/$slug': typeof AutomationsSlugRoute
+  '/automations/': typeof AutomationsIndexRoute
+  '/checkout/': typeof CheckoutIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/automations': typeof AuthenticatedAdminAutomationsRoute
+  '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
+  '/admin/creator': typeof AuthenticatedAdminCreatorRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
+  '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
+  '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/staff/payments': typeof AuthenticatedStaffPaymentsRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
+  '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
+  '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
+  '/api/public/widget/script': typeof ApiPublicWidgetScriptRoute
+  '/dashboard/automations/': typeof AuthenticatedDashboardAutomationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/security': typeof SecurityRoute
+  '/status': typeof StatusRoute
+  '/automations/$slug': typeof AutomationsSlugRoute
+  '/automations': typeof AutomationsIndexRoute
+  '/checkout': typeof CheckoutIndexRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/automations': typeof AuthenticatedAdminAutomationsRoute
+  '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
+  '/admin/creator': typeof AuthenticatedAdminCreatorRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
+  '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
+  '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/staff/payments': typeof AuthenticatedStaffPaymentsRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
+  '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
+  '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
+  '/api/public/widget/script': typeof ApiPublicWidgetScriptRoute
+  '/dashboard/automations': typeof AuthenticatedDashboardAutomationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/security': typeof SecurityRoute
+  '/status': typeof StatusRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/automations/$slug': typeof AutomationsSlugRoute
+  '/automations/': typeof AutomationsIndexRoute
+  '/checkout/': typeof CheckoutIndexRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/automations': typeof AuthenticatedAdminAutomationsRoute
+  '/_authenticated/admin/catalog': typeof AuthenticatedAdminCatalogRoute
+  '/_authenticated/admin/creator': typeof AuthenticatedAdminCreatorRoute
+  '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/_authenticated/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
+  '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
+  '/_authenticated/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/_authenticated/admin/verification': typeof AuthenticatedAdminVerificationRoute
+  '/_authenticated/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/_authenticated/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/_authenticated/staff/payments': typeof AuthenticatedStaffPaymentsRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
+  '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
+  '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
+  '/api/public/widget/script': typeof ApiPublicWidgetScriptRoute
+  '/_authenticated/dashboard/automations/': typeof AuthenticatedDashboardAutomationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/security'
+    | '/status'
+    | '/admin'
+    | '/dashboard'
+    | '/automations/$slug'
+    | '/automations/'
+    | '/checkout/'
+    | '/admin/analytics'
+    | '/admin/automations'
+    | '/admin/catalog'
+    | '/admin/creator'
+    | '/admin/crm'
+    | '/admin/infrastructure'
+    | '/admin/knowledge'
+    | '/admin/lifecycle'
+    | '/admin/orders'
+    | '/admin/pricing'
+    | '/admin/settings'
+    | '/admin/team'
+    | '/admin/verification'
+    | '/checkout/$slug'
+    | '/dashboard/payments'
+    | '/dashboard/profile'
+    | '/staff/payments'
+    | '/admin/'
+    | '/dashboard/'
+    | '/dashboard/automations/$id'
+    | '/api/public/hooks/lifecycle'
+    | '/api/public/widget/chat'
+    | '/api/public/widget/config'
+    | '/api/public/widget/script'
+    | '/dashboard/automations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/security'
+    | '/status'
+    | '/automations/$slug'
+    | '/automations'
+    | '/checkout'
+    | '/admin/analytics'
+    | '/admin/automations'
+    | '/admin/catalog'
+    | '/admin/creator'
+    | '/admin/crm'
+    | '/admin/infrastructure'
+    | '/admin/knowledge'
+    | '/admin/lifecycle'
+    | '/admin/orders'
+    | '/admin/pricing'
+    | '/admin/settings'
+    | '/admin/team'
+    | '/admin/verification'
+    | '/checkout/$slug'
+    | '/dashboard/payments'
+    | '/dashboard/profile'
+    | '/staff/payments'
+    | '/admin'
+    | '/dashboard'
+    | '/dashboard/automations/$id'
+    | '/api/public/hooks/lifecycle'
+    | '/api/public/widget/chat'
+    | '/api/public/widget/config'
+    | '/api/public/widget/script'
+    | '/dashboard/automations'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/security'
+    | '/status'
+    | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
+    | '/automations/$slug'
+    | '/automations/'
+    | '/checkout/'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/automations'
+    | '/_authenticated/admin/catalog'
+    | '/_authenticated/admin/creator'
+    | '/_authenticated/admin/crm'
+    | '/_authenticated/admin/infrastructure'
+    | '/_authenticated/admin/knowledge'
+    | '/_authenticated/admin/lifecycle'
+    | '/_authenticated/admin/orders'
+    | '/_authenticated/admin/pricing'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/team'
+    | '/_authenticated/admin/verification'
+    | '/_authenticated/checkout/$slug'
+    | '/_authenticated/dashboard/payments'
+    | '/_authenticated/dashboard/profile'
+    | '/_authenticated/staff/payments'
+    | '/_authenticated/admin/'
+    | '/_authenticated/dashboard/'
+    | '/_authenticated/dashboard/automations/$id'
+    | '/api/public/hooks/lifecycle'
+    | '/api/public/widget/chat'
+    | '/api/public/widget/config'
+    | '/api/public/widget/script'
+    | '/_authenticated/dashboard/automations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  SecurityRoute: typeof SecurityRoute
+  StatusRoute: typeof StatusRoute
+  AutomationsSlugRoute: typeof AutomationsSlugRoute
+  AutomationsIndexRoute: typeof AutomationsIndexRoute
+  CheckoutIndexRoute: typeof CheckoutIndexRoute
+  ApiPublicHooksLifecycleRoute: typeof ApiPublicHooksLifecycleRoute
+  ApiPublicWidgetChatRoute: typeof ApiPublicWidgetChatRoute
+  ApiPublicWidgetConfigRoute: typeof ApiPublicWidgetConfigRoute
+  ApiPublicWidgetScriptRoute: typeof ApiPublicWidgetScriptRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +480,338 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/automations/': {
+      id: '/automations/'
+      path: '/automations'
+      fullPath: '/automations/'
+      preLoaderRoute: typeof AutomationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automations/$slug': {
+      id: '/automations/$slug'
+      path: '/automations/$slug'
+      fullPath: '/automations/$slug'
+      preLoaderRoute: typeof AutomationsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/': {
+      id: '/checkout/'
+      path: '/checkout'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof CheckoutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/automations': {
+      id: '/_authenticated/admin/automations'
+      path: '/automations'
+      fullPath: '/admin/automations'
+      preLoaderRoute: typeof AuthenticatedAdminAutomationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/catalog': {
+      id: '/_authenticated/admin/catalog'
+      path: '/catalog'
+      fullPath: '/admin/catalog'
+      preLoaderRoute: typeof AuthenticatedAdminCatalogRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/creator': {
+      id: '/_authenticated/admin/creator'
+      path: '/creator'
+      fullPath: '/admin/creator'
+      preLoaderRoute: typeof AuthenticatedAdminCreatorRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/crm': {
+      id: '/_authenticated/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AuthenticatedAdminCrmRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/infrastructure': {
+      id: '/_authenticated/admin/infrastructure'
+      path: '/infrastructure'
+      fullPath: '/admin/infrastructure'
+      preLoaderRoute: typeof AuthenticatedAdminInfrastructureRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/knowledge': {
+      id: '/_authenticated/admin/knowledge'
+      path: '/knowledge'
+      fullPath: '/admin/knowledge'
+      preLoaderRoute: typeof AuthenticatedAdminKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/lifecycle': {
+      id: '/_authenticated/admin/lifecycle'
+      path: '/lifecycle'
+      fullPath: '/admin/lifecycle'
+      preLoaderRoute: typeof AuthenticatedAdminLifecycleRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/pricing': {
+      id: '/_authenticated/admin/pricing'
+      path: '/pricing'
+      fullPath: '/admin/pricing'
+      preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/team': {
+      id: '/_authenticated/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AuthenticatedAdminTeamRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/verification': {
+      id: '/_authenticated/admin/verification'
+      path: '/verification'
+      fullPath: '/admin/verification'
+      preLoaderRoute: typeof AuthenticatedAdminVerificationRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/checkout/$slug': {
+      id: '/_authenticated/checkout/$slug'
+      path: '/checkout/$slug'
+      fullPath: '/checkout/$slug'
+      preLoaderRoute: typeof AuthenticatedCheckoutSlugRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/payments': {
+      id: '/_authenticated/dashboard/payments'
+      path: '/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof AuthenticatedDashboardPaymentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/profile': {
+      id: '/_authenticated/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof AuthenticatedDashboardProfileRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/staff/payments': {
+      id: '/_authenticated/staff/payments'
+      path: '/staff/payments'
+      fullPath: '/staff/payments'
+      preLoaderRoute: typeof AuthenticatedStaffPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/automations/': {
+      id: '/_authenticated/dashboard/automations/'
+      path: '/automations'
+      fullPath: '/dashboard/automations/'
+      preLoaderRoute: typeof AuthenticatedDashboardAutomationsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/automations/$id': {
+      id: '/_authenticated/dashboard/automations/$id'
+      path: '/automations/$id'
+      fullPath: '/dashboard/automations/$id'
+      preLoaderRoute: typeof AuthenticatedDashboardAutomationsIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/public/hooks/lifecycle': {
+      id: '/api/public/hooks/lifecycle'
+      path: '/api/public/hooks/lifecycle'
+      fullPath: '/api/public/hooks/lifecycle'
+      preLoaderRoute: typeof ApiPublicHooksLifecycleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/widget/chat': {
+      id: '/api/public/widget/chat'
+      path: '/api/public/widget/chat'
+      fullPath: '/api/public/widget/chat'
+      preLoaderRoute: typeof ApiPublicWidgetChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/widget/config': {
+      id: '/api/public/widget/config'
+      path: '/api/public/widget/config'
+      fullPath: '/api/public/widget/config'
+      preLoaderRoute: typeof ApiPublicWidgetConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/widget/script': {
+      id: '/api/public/widget/script'
+      path: '/api/public/widget/script'
+      fullPath: '/api/public/widget/script'
+      preLoaderRoute: typeof ApiPublicWidgetScriptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminAutomationsRoute: typeof AuthenticatedAdminAutomationsRoute
+  AuthenticatedAdminCatalogRoute: typeof AuthenticatedAdminCatalogRoute
+  AuthenticatedAdminCreatorRoute: typeof AuthenticatedAdminCreatorRoute
+  AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
+  AuthenticatedAdminInfrastructureRoute: typeof AuthenticatedAdminInfrastructureRoute
+  AuthenticatedAdminKnowledgeRoute: typeof AuthenticatedAdminKnowledgeRoute
+  AuthenticatedAdminLifecycleRoute: typeof AuthenticatedAdminLifecycleRoute
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+  AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminTeamRoute: typeof AuthenticatedAdminTeamRoute
+  AuthenticatedAdminVerificationRoute: typeof AuthenticatedAdminVerificationRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminAutomationsRoute: AuthenticatedAdminAutomationsRoute,
+  AuthenticatedAdminCatalogRoute: AuthenticatedAdminCatalogRoute,
+  AuthenticatedAdminCreatorRoute: AuthenticatedAdminCreatorRoute,
+  AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
+  AuthenticatedAdminInfrastructureRoute: AuthenticatedAdminInfrastructureRoute,
+  AuthenticatedAdminKnowledgeRoute: AuthenticatedAdminKnowledgeRoute,
+  AuthenticatedAdminLifecycleRoute: AuthenticatedAdminLifecycleRoute,
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+  AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminTeamRoute: AuthenticatedAdminTeamRoute,
+  AuthenticatedAdminVerificationRoute: AuthenticatedAdminVerificationRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardPaymentsRoute: typeof AuthenticatedDashboardPaymentsRoute
+  AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardAutomationsIdRoute: typeof AuthenticatedDashboardAutomationsIdRoute
+  AuthenticatedDashboardAutomationsIndexRoute: typeof AuthenticatedDashboardAutomationsIndexRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardPaymentsRoute: AuthenticatedDashboardPaymentsRoute,
+    AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+    AuthenticatedDashboardAutomationsIdRoute:
+      AuthenticatedDashboardAutomationsIdRoute,
+    AuthenticatedDashboardAutomationsIndexRoute:
+      AuthenticatedDashboardAutomationsIndexRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+  AuthenticatedCheckoutSlugRoute: typeof AuthenticatedCheckoutSlugRoute
+  AuthenticatedStaffPaymentsRoute: typeof AuthenticatedStaffPaymentsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+  AuthenticatedCheckoutSlugRoute: AuthenticatedCheckoutSlugRoute,
+  AuthenticatedStaffPaymentsRoute: AuthenticatedStaffPaymentsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  SecurityRoute: SecurityRoute,
+  StatusRoute: StatusRoute,
+  AutomationsSlugRoute: AutomationsSlugRoute,
+  AutomationsIndexRoute: AutomationsIndexRoute,
+  CheckoutIndexRoute: CheckoutIndexRoute,
+  ApiPublicHooksLifecycleRoute: ApiPublicHooksLifecycleRoute,
+  ApiPublicWidgetChatRoute: ApiPublicWidgetChatRoute,
+  ApiPublicWidgetConfigRoute: ApiPublicWidgetConfigRoute,
+  ApiPublicWidgetScriptRoute: ApiPublicWidgetScriptRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

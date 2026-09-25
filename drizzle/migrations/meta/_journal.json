@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790319505653,
+      "tag": "0000_initial_platform_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790319531259,
+      "tag": "0001_lock_down_function_execute",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790319560490,
+      "tag": "0002_transcript_evaluations_and_system_settings",
+      "breakpoints": true
+    }
+  ]
+}
