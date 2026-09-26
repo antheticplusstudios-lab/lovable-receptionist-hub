@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_restrictions: {
+        Row: {
+          muted: boolean
+          reason: string | null
+          sessions_revoked_at: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          muted?: boolean
+          reason?: string | null
+          sessions_revoked_at?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          muted?: boolean
+          reason?: string | null
+          sessions_revoked_at?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       app_secrets: {
         Row: {
           key: string
@@ -164,6 +194,123 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "audit_logs_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_health: {
+        Row: {
+          automation_id: string
+          checked_at: string
+          overall: string
+          summary: string
+        }
+        Insert: {
+          automation_id: string
+          checked_at?: string
+          overall: string
+          summary?: string
+        }
+        Update: {
+          automation_id?: string
+          checked_at?: string
+          overall?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_health_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: true
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_health_checks: {
+        Row: {
+          automation_id: string
+          check_type: string
+          checked_at: string
+          error: string | null
+          id: string
+          latency_ms: number | null
+          metadata: Json
+          status: string
+        }
+        Insert: {
+          automation_id: string
+          check_type: string
+          checked_at?: string
+          error?: string | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          status: string
+        }
+        Update: {
+          automation_id?: string
+          check_type?: string
+          checked_at?: string
+          error?: string | null
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_health_checks_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_health_state: {
+        Row: {
+          automation_id: string
+          check_type: string
+          failure_count: number
+          last_checked_at: string
+          last_error: string | null
+          last_failure_at: string | null
+          last_success_at: string | null
+          latency_ms: number | null
+          recovered_at: string | null
+          status: string
+        }
+        Insert: {
+          automation_id: string
+          check_type: string
+          failure_count?: number
+          last_checked_at?: string
+          last_error?: string | null
+          last_failure_at?: string | null
+          last_success_at?: string | null
+          latency_ms?: number | null
+          recovered_at?: string | null
+          status: string
+        }
+        Update: {
+          automation_id?: string
+          check_type?: string
+          failure_count?: number
+          last_checked_at?: string
+          last_error?: string | null
+          last_failure_at?: string | null
+          last_success_at?: string | null
+          latency_ms?: number | null
+          recovered_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_health_state_automation_id_fkey"
             columns: ["automation_id"]
             isOneToOne: false
             referencedRelation: "client_automations"
@@ -376,14 +523,17 @@ export type Database = {
           client_id: string
           created_at: string
           domain_url: string
+          expires_at: string | null
           hmac_key: string
           id: string
+          installed_at: string | null
           is_active: boolean
           last_seen_at: string | null
           last_seen_origin: string | null
           order_id: string | null
           origin_domain: string
           requires_reinstallation: boolean
+          run_state: string
           script_token: string
           webhook_url: string
           widget_config: Json
@@ -394,14 +544,17 @@ export type Database = {
           client_id: string
           created_at?: string
           domain_url?: string
+          expires_at?: string | null
           hmac_key?: string
           id?: string
+          installed_at?: string | null
           is_active?: boolean
           last_seen_at?: string | null
           last_seen_origin?: string | null
           order_id?: string | null
           origin_domain?: string
           requires_reinstallation?: boolean
+          run_state?: string
           script_token?: string
           webhook_url?: string
           widget_config?: Json
@@ -412,14 +565,17 @@ export type Database = {
           client_id?: string
           created_at?: string
           domain_url?: string
+          expires_at?: string | null
           hmac_key?: string
           id?: string
+          installed_at?: string | null
           is_active?: boolean
           last_seen_at?: string | null
           last_seen_origin?: string | null
           order_id?: string | null
           origin_domain?: string
           requires_reinstallation?: boolean
+          run_state?: string
           script_token?: string
           webhook_url?: string
           widget_config?: Json
@@ -1267,6 +1423,44 @@ export type Database = {
         }
         Relationships: []
       }
+      script_generations: {
+        Row: {
+          automation_id: string
+          created_at: string
+          generated_by: string | null
+          id: string
+          invalidated_at: string | null
+          invalidated_reason: string | null
+          token_hint: string
+        }
+        Insert: {
+          automation_id: string
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          invalidated_at?: string | null
+          invalidated_reason?: string | null
+          token_hint: string
+        }
+        Update: {
+          automation_id?: string
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          invalidated_at?: string | null
+          invalidated_reason?: string | null
+          token_hint?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "script_generations_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staff_invites: {
         Row: {
           created_at: string
@@ -1610,6 +1804,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_automation_action: {
+        Args: { _action: string; _id: string; _reason: string }
+        Returns: Json
+      }
+      admin_generate_script: { Args: { _id: string }; Returns: string }
+      admin_moderate_user: {
+        Args: { _action: string; _reason: string; _user: string }
+        Returns: Json
+      }
+      admin_update_widget_config: {
+        Args: { _config: Json; _id: string }
+        Returns: undefined
+      }
+      assert_not_blocked: { Args: never; Returns: undefined }
+      automation_runtime_state: { Args: { _id: string }; Returns: string }
       can_manage_client_automation: { Args: { _id: string }; Returns: boolean }
       claim_staff_invite: { Args: never; Returns: string }
       has_role: {
@@ -1628,7 +1837,10 @@ export type Database = {
         }[]
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_blocked: { Args: { _uid: string }; Returns: boolean }
+      is_muted: { Args: { _uid: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      my_account_status: { Args: never; Returns: Json }
       my_client_id: { Args: never; Returns: string }
       my_origin_domain: { Args: never; Returns: string }
       owns_automation: { Args: { _automation_id: string }; Returns: boolean }
