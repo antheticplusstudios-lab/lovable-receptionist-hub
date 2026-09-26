@@ -38,6 +38,7 @@ import { Route as AuthenticatedCheckoutSlugRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated.dashboard.index'
 import { Route as AuthenticatedDashboardPaymentsRouteImport } from './routes/_authenticated.dashboard.payments'
 import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated.dashboard.profile'
+import { Route as AuthenticatedOrderProductRouteImport } from './routes/_authenticated.order.$product'
 import { Route as AuthenticatedStaffPaymentsRouteImport } from './routes/_authenticated.staff.payments'
 import { Route as AuthenticatedDashboardAutomationsIndexRouteImport } from './routes/_authenticated.dashboard.automations.index'
 import { Route as AuthenticatedDashboardAutomationsIdRouteImport } from './routes/_authenticated.dashboard.automations.$id'
@@ -206,6 +207,12 @@ const AuthenticatedDashboardProfileRoute =
     path: '/profile',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedOrderProductRoute =
+  AuthenticatedOrderProductRouteImport.update({
+    id: '/order/$product',
+    path: '/order/$product',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStaffPaymentsRoute =
   AuthenticatedStaffPaymentsRouteImport.update({
     id: '/staff/payments',
@@ -272,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
   '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/order/$product': typeof AuthenticatedOrderProductRoute
   '/staff/payments': typeof AuthenticatedStaffPaymentsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -307,6 +315,7 @@ export interface FileRoutesByTo {
   '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
   '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/order/$product': typeof AuthenticatedOrderProductRoute
   '/staff/payments': typeof AuthenticatedStaffPaymentsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -346,6 +355,7 @@ export interface FileRoutesById {
   '/_authenticated/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
   '/_authenticated/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/_authenticated/order/$product': typeof AuthenticatedOrderProductRoute
   '/_authenticated/staff/payments': typeof AuthenticatedStaffPaymentsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -385,6 +395,7 @@ export interface FileRouteTypes {
     | '/checkout/$slug'
     | '/dashboard/payments'
     | '/dashboard/profile'
+    | '/order/$product'
     | '/staff/payments'
     | '/admin/'
     | '/dashboard/'
@@ -420,6 +431,7 @@ export interface FileRouteTypes {
     | '/checkout/$slug'
     | '/dashboard/payments'
     | '/dashboard/profile'
+    | '/order/$product'
     | '/staff/payments'
     | '/admin'
     | '/dashboard'
@@ -458,6 +470,7 @@ export interface FileRouteTypes {
     | '/_authenticated/checkout/$slug'
     | '/_authenticated/dashboard/payments'
     | '/_authenticated/dashboard/profile'
+    | '/_authenticated/order/$product'
     | '/_authenticated/staff/payments'
     | '/_authenticated/admin/'
     | '/_authenticated/dashboard/'
@@ -689,6 +702,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardProfileRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/order/$product': {
+      id: '/_authenticated/order/$product'
+      path: '/order/$product'
+      fullPath: '/order/$product'
+      preLoaderRoute: typeof AuthenticatedOrderProductRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/staff/payments': {
       id: '/_authenticated/staff/payments'
       path: '/staff/payments'
@@ -808,6 +828,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedCheckoutSlugRoute: typeof AuthenticatedCheckoutSlugRoute
+  AuthenticatedOrderProductRoute: typeof AuthenticatedOrderProductRoute
   AuthenticatedStaffPaymentsRoute: typeof AuthenticatedStaffPaymentsRoute
 }
 
@@ -815,6 +836,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedCheckoutSlugRoute: AuthenticatedCheckoutSlugRoute,
+  AuthenticatedOrderProductRoute: AuthenticatedOrderProductRoute,
   AuthenticatedStaffPaymentsRoute: AuthenticatedStaffPaymentsRoute,
 }
 

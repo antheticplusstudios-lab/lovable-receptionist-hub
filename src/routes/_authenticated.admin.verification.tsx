@@ -1,223 +1,85 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, CheckCircle2, Copy, ExternalLink, Globe, TriangleAlert } from "lucide-react";
-import { useMemo, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CheckCircle2, Copy } from "lucide-react";
+import { AdminPage, DataTable, Panel, StatusPill, money, timeAgo } from "@/components/admin-ui";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { AdminPage, DataTable, Loading, Panel, StatusPill, money, shortDate, timeAgo } from "@/components/admin-ui";
-import { useAllPayments, useReviewPayment } from "@/hooks/use-admin";
+import { supabase } from "@/integrations/supabase/client";
+import { AUTOMATION_LABEL, FIELD_LABEL, embedSnippet } from "@/lib/catalog-v2";
 
-export const Route = createFileRoute("/_authenticated/admin/verification")({ component: VerificationPage });
-
-type Payment = {
-  id: string;
-  amount: number;
-  automation_slug: string;
-  billing_plan: string;
-  sender_name: string;
-  payment_method: string;
-  transaction_id: string;
-  origin: string;
-  status: string;
-  submitted_at: string;
-  reviewed_at: string | null;
-  rejection_reason: string | null;
-};
-
-type ApprovalResult = {
-  crawled?: boolean;
-  snippet?: string;
-  automationId?: string | null;
-  crawlUrl?: string;
-  crawlChars?: number;
-};
-
-function ApprovalModal({ result, payment, onClose }: { result: ApprovalResult; payment: Payment; onClose: () => void }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-primary" /> Approved and live
-          </DialogTitle>
-          <DialogDescription>
-            {payment.automation_slug} for {payment.sender_name} is active. Send them this script.
-          </DialogDescription>
-        </DialogHeader>
-        <div
-          className={`flex items-start gap-3 rounded-xl p-3 text-sm ${
-            result.crawled ? "bg-secondary" : "bg-destructive/10 text-destructive"
-          }`}
-        >
-          {result.crawled ? <Globe className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> : <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />}
-          <div>
-            <p className="font-bold">{result.crawled ? "Website crawled" : "Website couldn't be reached"}</p>
-            <p className="text-xs opacity-80">
-              {result.crawled
-                ? `${(result.crawlChars ?? 0).toLocaleString()} characters saved from ${result.crawlUrl} to the knowledge base.`
-                : `Add knowledge manually on the Knowledge Drafts page${result.crawlUrl ? ` (tried ${result.crawlUrl})` : ""}.`}
-            </p>
-          </div>
-        </div>
-        {result.snippet ? (
-          <>
-            <pre className="overflow-x-auto whitespace-pre-wrap break-all rounded-xl bg-muted p-4 text-xs">
-              <code>{result.snippet}</code>
-            </pre>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                onClick={() => {
-                  void navigator.clipboard.writeText(result.snippet ?? "");
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
-                }}
-              >
-                {copied ? <Check /> : <Copy />} {copied ? "Copied" : "Copy script"}
-              </Button>
-              <Button variant="outline" asChild>
-                <Link to="/admin/automations">
-                  <ExternalLink /> Open automations
-                </Link>
-              </Button>
-            </div>
-          </>
-        ) : (
-          <p className="text-sm text-muted-foreground">This payment isn't linked to an automation, so no script was created.</p>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function VerificationCard({ payment }: { payment: Payment }) {
-  const review = useReviewPayment();
-  const [rejecting, setRejecting] = useState(false);
-  const [reason, setReason] = useState("");
-  const [decided, setDecided] = useState(false);
-  const [result, setResult] = useState<ApprovalResult | null>(null);
-
-  const approve = () => {
-    review.mutate(
-      { paymentId: payment.id, approve: true, reason: "" },
-      {
-        onSuccess: (r: unknown) => {
-          setDecided(true);
-          setResult((r ?? {}) as ApprovalResult);
-        },
-      },
-    );
-  };
-  const reject = () => {
-    review.mutate({ paymentId: payment.id, approve: false, reason }, { onSuccess: () => setDecided(true) });
-  };
-
-  return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
-      {result && <ApprovalModal result={result} payment={payment} onClose={() => setResult(null)} />}
-      <div>
-        <p className="text-2xl font-extrabold tabular-nums">{money(payment.amount)}</p>
-        <p className="text-sm font-semibold">{payment.automation_slug}</p>
-        <p className="text-xs uppercase tracking-wide text-muted-foreground">{payment.billing_plan}</p>
-      </div>
-      <div className="grid gap-1 text-xs text-muted-foreground">
-        <p>Client: <span className="font-semibold text-foreground">{payment.sender_name}</span></p>
-        <p>Method: {payment.payment_method}</p>
-        <p>Transaction: {payment.transaction_id}</p>
-        <p className="capitalize">Origin: {payment.origin}</p>
-        <p>Submitted {timeAgo(payment.submitted_at)}</p>
-      </div>
-      {decided ? (
-        <p className="rounded-xl bg-secondary px-3 py-2 text-xs text-muted-foreground">
-          Decision recorded. The owner and partner receive the audit record.
-        </p>
-      ) : rejecting ? (
-        <div className="grid gap-2">
-          <Textarea
-            placeholder="Reason for rejection…"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={3}
-          />
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setRejecting(false)} className="flex-1">
-              Cancel
-            </Button>
-            <Button
-              onClick={reject}
-              disabled={!reason.trim() || review.isPending}
-              className="flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Confirm rejection
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="flex gap-2">
-          <Button
-            onClick={approve}
-            disabled={review.isPending}
-            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Approve payment
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setRejecting(true)}
-            disabled={review.isPending}
-            className="flex-1 border-destructive text-destructive hover:bg-destructive/10"
-          >
-            Reject
-          </Button>
-        </div>
-      )}
-    </div>
-  );
-}
+export const Route = createFileRoute("/_authenticated/admin/verification")({
+  head: () => ({ meta: [{ title: "Verification Queue — AntheticPlus" }] }),
+  component: VerificationPage,
+});
 
 function VerificationPage() {
-  const { data: payments, isLoading } = useAllPayments();
+  const qc = useQueryClient();
+  const [filter, setFilter] = useState<"pending_verification" | "approved" | "rejected">("pending_verification");
+  const [rejecting, setRejecting] = useState<string | null>(null);
+  const [reason, setReason] = useState("");
+  const [approved, setApproved] = useState<{ snippet: string; name: string } | null>(null);
+  const orders = useQuery({
+    queryKey: ["admin-orders", filter],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("orders").select("*, payment_methods(method_name)").eq("status", filter).order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  const all = (payments ?? []) as Payment[];
-  const pending = useMemo(() => all.filter((p) => p.status === "pending"), [all]);
-  const decided = useMemo(() => {
-    const cutoff = Date.now() - 14 * 86_400_000;
-    return all.filter((p) => p.status !== "pending" && p.reviewed_at && new Date(p.reviewed_at).getTime() >= cutoff);
-  }, [all]);
-
-  if (isLoading) return <Loading />;
+  async function review(id: string, approve: boolean, why = "") {
+    const o = orders.data?.find((x) => x.id === id);
+    const { data: token, error } = await supabase.rpc("review_order", { _order_id: id, _approve: approve, _reason: why });
+    if (error) return toast.error(error.message);
+    void qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    if (approve && o && token) setApproved({ snippet: embedSnippet(o.client_id, o.order_id, token), name: o.full_name || o.client_id });
+    else toast.success("Order rejected");
+    setRejecting(null);
+    setReason("");
+  }
 
   return (
-    <AdminPage
-      title="Verification Queue"
-      subtitle="The only screen a Payment Verifier can reach. Approve or reject manual payments; every decision is written to the immutable audit trail."
-    >
-      <Panel title={`Pending review (${pending.length})`}>
-        {pending.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">Nothing waiting for review.</p>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {pending.map((p) => (
-              <VerificationCard key={p.id} payment={p} />
-            ))}
-          </div>
-        )}
-      </Panel>
-
-      <Panel title="Decided in the last 14 days">
+    <AdminPage title="Verification Queue" subtitle="Every order from every storefront, in one place.">
+      <div className="mb-4 flex gap-2">
+        {(["pending_verification", "approved", "rejected"] as const).map((s) => (
+          <Button key={s} size="sm" variant={filter === s ? "default" : "outline"} onClick={() => setFilter(s)}>{s.replace("_", " ")}</Button>
+        ))}
+      </div>
+      <Panel>
         <DataTable
-          head={["Submitted", "Client", "Amount", "Status", "Reviewed at", "Rejection reason"]}
-          empty="No decisions in this window."
-          rows={decided.map((p) => [
-            timeAgo(p.submitted_at),
-            p.sender_name,
-            <span className="tabular-nums" key="amount">{money(p.amount)}</span>,
-            <StatusPill status={p.status} key="status" />,
-            shortDate(p.reviewed_at),
-            p.rejection_reason ?? "—",
+          head={["Order", "Client", "Product", "Amount", "Payment proof", "Origin", "Submitted", ""]}
+          empty="No orders here."
+          rows={(orders.data ?? []).map((o) => [
+            <span className="font-mono text-xs">{o.order_id}</span>,
+            <div><div className="font-semibold">{o.full_name}</div><div className="text-xs text-muted-foreground">{o.client_id} · {o.contact_email}</div></div>,
+            <div><div>{AUTOMATION_LABEL[o.automation_type]}</div><div className="text-xs text-muted-foreground">{o.delivery_channel} · {o.target_domain_url}</div></div>,
+            money(o.total_amount),
+            <div className="text-xs"><div className="font-semibold">{(o.payment_methods as { method_name: string } | null)?.method_name}</div>{Object.entries(o.payment_proof_data as Record<string, string>).map(([k, v]) => <div key={k}>{FIELD_LABEL[k] ?? k}: <span className="font-mono">{v}</span></div>)}</div>,
+            o.origin_domain,
+            timeAgo(o.created_at),
+            o.status === "pending_verification" ? (
+              <div className="flex gap-2"><Button size="sm" onClick={() => void review(o.id, true)}>Approve</Button><Button size="sm" variant="outline" onClick={() => setRejecting(o.id)}>Reject</Button></div>
+            ) : <StatusPill status={o.status} />,
           ])}
         />
       </Panel>
+      <Dialog open={!!rejecting} onOpenChange={(v) => !v && setRejecting(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Reject order</DialogTitle><DialogDescription>The client will see this reason.</DialogDescription></DialogHeader>
+          <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Transaction ID not found in our statement." />
+          <Button variant="destructive" disabled={reason.trim().length < 3} onClick={() => rejecting && void review(rejecting, false, reason)}>Reject</Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={!!approved} onOpenChange={(v) => !v && setApproved(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> Approved and live</DialogTitle><DialogDescription>{approved?.name}'s script is unlocked on their dashboard.</DialogDescription></DialogHeader>
+          <pre className="overflow-auto rounded-xl bg-muted p-3 text-xs">{approved?.snippet}</pre>
+          <Button onClick={() => { void navigator.clipboard.writeText(approved?.snippet ?? ""); toast.success("Copied"); }}><Copy className="h-4 w-4" /> Copy script</Button>
+        </DialogContent>
+      </Dialog>
     </AdminPage>
   );
 }
