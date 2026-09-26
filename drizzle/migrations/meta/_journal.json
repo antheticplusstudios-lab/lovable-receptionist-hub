@@ -29,6 +29,13 @@
       "when": 1790396408843,
       "tag": "0003_platform_v2_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790401630771,
+      "tag": "0004_stage1_gen2_foundation",
+      "breakpoints": true
     }
   ]
 }
