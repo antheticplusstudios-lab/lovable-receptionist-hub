@@ -114,3 +114,22 @@ export async function buildSystemPrompt(admin: Admin, inst: Installation) {
     .filter(Boolean)
     .join("\n\n");
 }
+
+/** Canonical runtime gate (run_state, is_active, expiry, owner restriction). */
+export async function runtimeState(admin: Admin, id: string): Promise<string> {
+  const { data, error } = await admin.rpc("automation_runtime_state", { _id: id });
+  if (error) return "error";
+  return String(data ?? "missing");
+}
+
+/** A successful load from the client's own domain proves the installation works. */
+export async function markInstalled(admin: Admin, inst: Installation, origin: string | null, appHost: string) {
+  const now = new Date().toISOString();
+  const fromClientSite = !!origin && hostOf(origin) !== hostOf(appHost);
+  const patch: Record<string, unknown> = { last_seen_at: now, last_seen_origin: origin ?? "" };
+  if (fromClientSite) {
+    patch["installed_at"] = now;
+    patch["requires_reinstallation"] = false;
+  }
+  await admin.from("client_automations").update(patch).eq("id", inst.id);
+}

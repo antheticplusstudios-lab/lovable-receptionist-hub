@@ -43,6 +43,13 @@
       "when": 1790402847662,
       "tag": "0005_stage2_admin_foundation",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790403122369,
+      "tag": "0006_place_order_restriction_check",
+      "breakpoints": true
     }
   ]
 }

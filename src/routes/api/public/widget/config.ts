@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { adminClient, fail, json, originAllowed, preflight, resolveInstallation, widgetEnabledGlobally } from "@/lib/widget.server";
+import { adminClient, fail, json, originAllowed, preflight, resolveInstallation, widgetEnabledGlobally, runtimeState, markInstalled } from "@/lib/widget.server";
 
 export const Route = createFileRoute("/api/public/widget/config")({
   server: {
@@ -18,8 +18,9 @@ export const Route = createFileRoute("/api/public/widget/config")({
         const inst = await resolveInstallation(admin, token);
         if (!inst) return fail("Unknown installation", 404, origin, "invalid_token");
         if (!originAllowed(inst, origin, new URL(request.url).host)) return fail("Domain not authorised", 403, origin, "domain");
-        if (!inst.is_active) return fail("This assistant is not active", 403, origin, "inactive");
-        await admin.from("client_automations").update({ last_seen_at: new Date().toISOString(), last_seen_origin: origin ?? "" }).eq("id", inst.id);
+        const rs = await runtimeState(admin, inst.id);
+        if (rs !== "active") return fail("This assistant is not available", 403, origin, "inactive");
+        await markInstalled(admin, inst, origin, new URL(request.url).host);
         const c = inst.widget_config ?? {};
         // Only presentation settings leave the server.
         const ALLOWED = ["primary","secondary","accent","glow","size","position","style","speed","amplitude","waveforms","text","title","subtitle","placeholder","autoOpen","mobileHidden","sound","states"];
