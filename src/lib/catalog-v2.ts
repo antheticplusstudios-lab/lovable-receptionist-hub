@@ -57,5 +57,6 @@ export const FIELD_LABEL: Record<string, string> = {
 };
 
 export function embedSnippet(clientId: string, orderId: string | null, token: string) {
-  return `<script\n  src="https://antheticplus.com/widget.js"\n  data-client-id="${clientId}"\n  data-order-id="${orderId ?? ""}"\n  data-token="${token}"\n  async>\n</script>`;
+  const base = (import.meta.env["VITE_APP_URL"] as string | undefined)?.replace(/\/$/, "") || (typeof window !== "undefined" ? window.location.origin : "");
+  return `<script\n  src="${base}/widget.js"\n  data-client-id="${clientId}"\n  data-order-id="${orderId ?? ""}"\n  data-token="${token}"\n  async>\n</script>`;
 }
