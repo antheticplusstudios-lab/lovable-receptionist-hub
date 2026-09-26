@@ -178,9 +178,9 @@ function Knowledge({ automationId, clientId }: { automationId: string; clientId:
   const refresh = () => { void qc.invalidateQueries({ queryKey: ["kb", automationId] }); void qc.invalidateQueries({ queryKey: ["crawl", automationId] }); };
 
   async function scrape() {
-    if (!/^https?:\/\//.test(url)) return toast.error("Enter a full URL starting with https://");
+    if (!/^https?:\/\//.test(url)) { toast.error("Enter a full URL starting with https://"); return; }
     const { error } = await supabase.from("crawl_jobs").insert({ automation_id: automationId, target_url: url });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Scrape queued");
     setUrl("");
     refresh();
@@ -199,7 +199,7 @@ function Knowledge({ automationId, clientId }: { automationId: string; clientId:
   }
   async function remove(docId: string) {
     const { error } = await supabase.from("kb_documents").delete().eq("id", docId);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   }
   return (
@@ -243,7 +243,7 @@ function Features({ automationId, type }: { automationId: string; type: string }
   const byKey = new Map((tasks.data ?? []).map((t) => [t.task_key, t]));
   async function toggle(key: string, enabled: boolean) {
     const { error } = await supabase.from("automation_tasks").upsert({ automation_id: automationId, task_key: key, enabled }, { onConflict: "automation_id,task_key" });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     void qc.invalidateQueries({ queryKey: ["tasks", automationId] });
   }
   return (

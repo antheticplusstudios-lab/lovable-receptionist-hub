@@ -29,14 +29,14 @@ function PaymentMethodsPage() {
   const parse = (s: string) => s.split(",").map((x) => x.trim()).filter(Boolean);
 
   async function save(id: string, patch: Record<string, unknown>) {
-    const { error } = await supabase.from("payment_methods").update(patch).eq("id", id);
-    if (error) return toast.error(error.message);
+    const { error } = await supabase.from("payment_methods").update(patch as never).eq("id", id);
+    if (error) { toast.error(error.message); return; }
     toast.success("Saved");
     refresh();
   }
   async function add() {
     const { error } = await supabase.from("payment_methods").insert({ method_name: n.method_name, instructions: n.instructions, required_fields: parse(n.fields) });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setN({ method_name: "", instructions: "", fields: "sender_phone, trx_id" });
     refresh();
   }

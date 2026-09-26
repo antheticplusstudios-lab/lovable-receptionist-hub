@@ -32,8 +32,8 @@ function ReceptionistAdmin() {
   const current = list.data?.find((a) => a.id === sel);
 
   async function update(id: string, patch: Record<string, unknown>) {
-    const { error } = await supabase.from("client_automations").update(patch).eq("id", id);
-    if (error) return toast.error(error.message);
+    const { error } = await supabase.from("client_automations").update(patch as never).eq("id", id);
+    if (error) { toast.error(error.message); return; }
     toast.success("Saved");
     refresh();
   }

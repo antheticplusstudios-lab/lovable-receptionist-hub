@@ -33,7 +33,7 @@ function VerificationPage() {
   async function review(id: string, approve: boolean, why = "") {
     const o = orders.data?.find((x) => x.id === id);
     const { data: token, error } = await supabase.rpc("review_order", { _order_id: id, _approve: approve, _reason: why });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     void qc.invalidateQueries({ queryKey: ["admin-orders"] });
     if (approve && o && token) setApproved({ snippet: embedSnippet(o.client_id, o.order_id, token), name: o.full_name || o.client_id });
     else toast.success("Order rejected");

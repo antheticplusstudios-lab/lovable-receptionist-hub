@@ -28,12 +28,12 @@ function KeysPage() {
   const refresh = () => void qc.invalidateQueries({ queryKey: ["llm-keys"] });
   async function add() {
     const { error } = await supabase.from("llm_api_keys").insert(n);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setN({ ...n, label: "", api_key: "" });
     refresh();
   }
   async function patch(id: string, p: Record<string, unknown>) {
-    const { error } = await supabase.from("llm_api_keys").update(p).eq("id", id);
+    const { error } = await supabase.from("llm_api_keys").update(p as never).eq("id", id);
     if (error) toast.error(error.message);
     refresh();
   }

@@ -46,7 +46,7 @@ export function WidgetCustomizer({
     setSaving(true);
     const { error } = await supabase.from("client_automations").update({ widget_config: c }).eq("id", automationId);
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Widget saved");
     onSaved?.();
   }
