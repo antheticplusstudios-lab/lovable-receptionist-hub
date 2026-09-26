@@ -10,6 +10,7 @@ import {
   preflight,
   resolveInstallation,
   widgetEnabledGlobally,
+  runtimeState,
   withinRateLimit,
 } from "@/lib/widget.server";
 
@@ -41,7 +42,8 @@ export const Route = createFileRoute("/api/public/widget/chat")({
         const inst = await resolveInstallation(admin, body.token);
         if (!inst) return fail("Unknown installation", 404, origin, "invalid_token");
         if (!originAllowed(inst, origin, new URL(request.url).host)) return fail("Domain not authorised", 403, origin, "domain");
-        if (!inst.is_active) return fail("This assistant is not active", 403, origin, "inactive");
+        const rs = await runtimeState(admin, inst.id);
+        if (rs !== "active") return fail("This assistant is not available", 403, origin, "inactive");
         if (!(await withinRateLimit(admin, inst.id))) return fail("Too many messages, try again shortly", 429, origin, "rate_limited");
 
         // Conversation (one per visitor session per installation)
