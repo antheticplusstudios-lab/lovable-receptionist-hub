@@ -113,20 +113,19 @@ function OrderPage() {
     if (!profile.data) return;
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("orders").insert({
-        client_id: profile.data.client_id,
-        automation_type: product,
-        delivery_channel: isRec ? f.channel : f.msgChannels.join(","),
-        selected_features: f.features,
-        full_name: f.full_name.trim(),
-        company_name: f.company_name.trim(),
-        contact_email: f.email.trim(),
-        country: f.country.trim(),
-        target_domain_url: f.target.trim(),
-        total_amount: total,
-        payment_method_id: f.methodId,
-        payment_proof_data: f.proof,
-        origin_domain: profile.data.registered_origin_domain,
+      // Price is recalculated server-side by place_order(); the displayed total is informational only.
+      const { error } = await supabase.rpc("place_order", {
+        _product: product,
+        _channel: isRec ? f.channel : "",
+        _msg_channels: isRec ? [] : f.msgChannels,
+        _features: f.features,
+        _full_name: f.full_name,
+        _company: f.company_name,
+        _email: f.email,
+        _country: f.country,
+        _target: f.target,
+        _method: f.methodId,
+        _proof: f.proof,
       });
       if (error) throw error;
       await new Promise((r) => setTimeout(r, 900));

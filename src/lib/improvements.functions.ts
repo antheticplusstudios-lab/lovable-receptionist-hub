@@ -24,7 +24,7 @@ export const testReceptionist = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     // RLS: clients only see their own automations, staff see all.
     const { data: rows, error } = await context.supabase
-      .from("automation_instances")
+      .from("client_automations")
       .select("id")
       .eq("id", data.automationId)
       .limit(1);
@@ -32,17 +32,17 @@ export const testReceptionist = createServerFn({ method: "POST" })
     if (!rows?.length) return { error: "Automation not found." };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { systemPrompt } = await import("./widget.server");
+    const { buildSystemPrompt } = await import("./widget.server");
     const { routeChat } = await import("./llm-router.server");
-    const { data: inst } = await supabaseAdmin.from("automation_instances").select("*").eq("id", data.automationId).single();
+    const { data: inst } = await supabaseAdmin.from("client_automations").select("*").eq("id", data.automationId).single();
     if (!inst) return { error: "Automation not found." };
 
-    const system = await systemPrompt(supabaseAdmin as never, inst as never);
-    const routed = await routeChat(supabaseAdmin as never, [
-      { role: "system", content: system },
-      ...data.history.slice(-8),
-      { role: "user", content: data.message },
-    ]);
+    const system = await buildSystemPrompt(supabaseAdmin as never, inst as never);
+    const routed = await routeChat(
+      supabaseAdmin as never,
+      [{ role: "system", content: system }, ...data.history.slice(-8), { role: "user", content: data.message }],
+      { automationId: data.automationId },
+    );
     if (!routed?.reply) return { error: "The assistant is temporarily unavailable. Try again in a moment." };
     return { reply: routed.reply, model: routed.model };
   });

@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as StatusRouteImport } from './routes/status'
+import { Route as WidgetDotjsRouteImport } from './routes/widget[.]js'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AutomationsIndexRouteImport } from './routes/automations.index'
@@ -74,6 +75,11 @@ const SecurityRoute = SecurityRouteImport.update({
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
   path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WidgetDotjsRoute = WidgetDotjsRouteImport.update({
+  id: '/widget.js',
+  path: '/widget.js',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -292,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/security': typeof SecurityRoute
   '/status': typeof StatusRoute
+  '/widget.js': typeof WidgetDotjsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/automations/$slug': typeof AutomationsSlugRoute
@@ -335,6 +342,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/security': typeof SecurityRoute
   '/status': typeof StatusRoute
+  '/widget.js': typeof WidgetDotjsRoute
   '/automations/$slug': typeof AutomationsSlugRoute
   '/automations': typeof AutomationsIndexRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -378,6 +386,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/security': typeof SecurityRoute
   '/status': typeof StatusRoute
+  '/widget.js': typeof WidgetDotjsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/automations/$slug': typeof AutomationsSlugRoute
@@ -423,6 +432,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/security'
     | '/status'
+    | '/widget.js'
     | '/admin'
     | '/dashboard'
     | '/automations/$slug'
@@ -466,6 +476,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/security'
     | '/status'
+    | '/widget.js'
     | '/automations/$slug'
     | '/automations'
     | '/checkout'
@@ -508,6 +519,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/security'
     | '/status'
+    | '/widget.js'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/automations/$slug'
@@ -553,6 +565,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   SecurityRoute: typeof SecurityRoute
   StatusRoute: typeof StatusRoute
+  WidgetDotjsRoute: typeof WidgetDotjsRoute
   AutomationsSlugRoute: typeof AutomationsSlugRoute
   AutomationsIndexRoute: typeof AutomationsIndexRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
@@ -597,6 +610,13 @@ declare module '@tanstack/react-router' {
       path: '/status'
       fullPath: '/status'
       preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/widget.js': {
+      id: '/widget.js'
+      path: '/widget.js'
+      fullPath: '/widget.js'
+      preLoaderRoute: typeof WidgetDotjsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -959,6 +979,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SecurityRoute: SecurityRoute,
   StatusRoute: StatusRoute,
+  WidgetDotjsRoute: WidgetDotjsRoute,
   AutomationsSlugRoute: AutomationsSlugRoute,
   AutomationsIndexRoute: AutomationsIndexRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
