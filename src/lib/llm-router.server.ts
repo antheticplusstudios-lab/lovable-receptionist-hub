@@ -1,95 +1,113 @@
 /**
- * LLM router for the live chat widget.
- * 1. Groq key pool (owner-managed in the admin panel): primary first, round-robin on 429/5xx,
- *    failing keys get a 60s cooldown and a failover log entry.
- * 2. If no Groq key works, falls back to Lovable AI so the receptionist never goes silent.
+ * Canonical LLM router (Gen 2). Every AI request goes through routeChat().
+ * Order: active llm_api_keys by priority (skipping cooled-down keys) → Lovable AI fallback.
+ * Each attempt is written to llm_requests (latency, status, tokens, error) and updates key health.
  */
 type Admin = { from: (t: string) => any };
 export type ChatMsg = { role: "system" | "user" | "assistant"; content: string };
+export type RouteResult = { reply: string; provider: string; model: string; tokensIn: number; tokensOut: number };
 
-const GROQ_MODEL = "llama-3.1-8b-instant";
+const ENDPOINT: Record<string, { url: string; model: string }> = {
+  groq: { url: "https://api.groq.com/openai/v1/chat/completions", model: "llama-3.1-8b-instant" },
+  openrouter: { url: "https://openrouter.ai/api/v1/chat/completions", model: "openai/gpt-4o-mini" },
+};
+const LOVABLE_MODEL = "openai/gpt-6-astra";
 
-async function tryGroq(admin: Admin, messages: ChatMsg[]) {
+type Opts = { automationId?: string | null; maxTokens?: number; temperature?: number };
+
+async function log(admin: Admin, row: Record<string, unknown>) {
+  await admin.from("llm_requests").insert(row);
+}
+
+async function tryKeys(admin: Admin, messages: ChatMsg[], o: Opts): Promise<RouteResult | null> {
   const { data } = await admin
-    .from("groq_keys")
-    .select("id, key_value, is_primary, cooldown_until, request_count, error_count")
-    .eq("enabled", true)
-    .order("is_primary", { ascending: false })
-    .order("last_used_at", { ascending: true, nullsFirst: true });
+    .from("llm_api_keys")
+    .select("id, provider, api_key, model, cooldown_until, request_count, error_count")
+    .eq("is_active", true)
+    .in("provider", ["groq", "openrouter"])
+    .order("priority", { ascending: true });
   const now = Date.now();
   const keys = ((data ?? []) as any[]).filter((k) => !k.cooldown_until || new Date(k.cooldown_until).getTime() < now);
-
   for (const k of keys) {
-    let res: Response;
+    const ep = ENDPOINT[k.provider];
+    if (!ep) continue;
+    const model = k.model || ep.model;
+    const t0 = Date.now();
+    let res: Response | null = null;
+    let err = "";
     try {
-      res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      res = await fetch(ep.url, {
         method: "POST",
-        headers: { Authorization: `Bearer ${k.key_value}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: GROQ_MODEL, messages, max_tokens: 500, temperature: 0.4 }),
+        headers: { Authorization: `Bearer ${k.api_key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model, messages, max_tokens: o.maxTokens ?? 600, temperature: o.temperature ?? 0.4 }),
+        signal: AbortSignal.timeout(25_000),
       });
     } catch (e) {
-      await admin.from("groq_failover_log").insert({ key_id: k.id, status_code: 0, message: String(e).slice(0, 300) });
-      continue;
+      err = String(e).slice(0, 300);
     }
-    if (res.ok) {
+    const latency = Date.now() - t0;
+    if (res?.ok) {
       const j = (await res.json()) as any;
       const reply = j.choices?.[0]?.message?.content?.trim() ?? "";
-      await admin
-        .from("groq_keys")
-        .update({ request_count: (k.request_count ?? 0) + 1, last_used_at: new Date().toISOString() })
-        .eq("id", k.id);
-      if (reply) return { reply, model: `groq/${GROQ_MODEL}`, tokensIn: j.usage?.prompt_tokens ?? 0, tokensOut: j.usage?.completion_tokens ?? 0 };
+      const tin = j.usage?.prompt_tokens ?? 0;
+      const tout = j.usage?.completion_tokens ?? 0;
+      await admin.from("llm_api_keys").update({ request_count: (k.request_count ?? 0) + 1, last_success_at: new Date().toISOString() }).eq("id", k.id);
+      await log(admin, { automation_id: o.automationId ?? null, key_id: k.id, provider: k.provider, model, status: reply ? "ok" : "empty", http_status: 200, latency_ms: latency, tokens_in: tin, tokens_out: tout });
+      if (reply) return { reply, provider: k.provider, model, tokensIn: tin, tokensOut: tout };
       continue;
     }
-    const msg = (await res.text().catch(() => "")).slice(0, 300);
-    const retryable = res.status === 429 || res.status >= 500 || res.status === 401 || res.status === 403;
-    await admin.from("groq_failover_log").insert({ key_id: k.id, status_code: res.status, message: msg });
+    const status = res?.status ?? 0;
+    if (res) err = (await res.text().catch(() => "")).slice(0, 300);
+    await log(admin, { automation_id: o.automationId ?? null, key_id: k.id, provider: k.provider, model, status: "error", http_status: status, latency_ms: latency, error: err });
     await admin
-      .from("groq_keys")
+      .from("llm_api_keys")
       .update({
         error_count: (k.error_count ?? 0) + 1,
-        cooldown_until: new Date(now + (res.status === 429 ? 60_000 : 300_000)).toISOString(),
+        last_error: `${status} ${err}`.slice(0, 300),
+        last_error_at: new Date().toISOString(),
+        cooldown_until: new Date(now + (status === 429 ? 60_000 : 300_000)).toISOString(),
       })
       .eq("id", k.id);
-    if (!retryable) break;
   }
   return null;
 }
 
-async function tryLovable(messages: ChatMsg[]) {
+async function tryLovable(admin: Admin, messages: ChatMsg[], o: Opts): Promise<RouteResult | null> {
   const key = process.env["LOVABLE_API_KEY"];
   if (!key) return null;
   const system = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n\n");
   const input = messages
     .filter((m) => m.role !== "system")
     .map((m) => ({ role: m.role, content: [{ type: m.role === "assistant" ? "output_text" : "input_text", text: m.content }] }));
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "fetch" },
-    body: JSON.stringify({ model: "openai/gpt-6-astra", instructions: system, input, stream: true, store: false, reasoning: { effort: "low" } }),
-  });
-  if (!res.ok || !res.body) return null;
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  let buf = "";
-  let text = "";
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    const lines = buf.split("\n");
-    buf = lines.pop() ?? "";
-    for (const line of lines) {
-      if (!line.startsWith("data:")) continue;
-      try {
-        const ev = JSON.parse(line.slice(5).trim());
-        if (ev.type === "response.output_text.delta") text += ev.delta ?? "";
-      } catch {}
-    }
+  const t0 = Date.now();
+  let res: Response;
+  try {
+    res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Lovable-API-Key": key, "X-Lovable-AIG-SDK": "fetch" },
+      body: JSON.stringify({ model: LOVABLE_MODEL, instructions: system, input, store: false, reasoning: { effort: "low" }, max_output_tokens: 2000 }),
+      signal: AbortSignal.timeout(45_000),
+    });
+  } catch (e) {
+    await log(admin, { automation_id: o.automationId ?? null, provider: "lovable", model: LOVABLE_MODEL, status: "error", latency_ms: Date.now() - t0, error: String(e).slice(0, 300) });
+    return null;
   }
-  return text.trim() ? { reply: text.trim(), model: "lovable/gpt-6-astra", tokensIn: 0, tokensOut: 0 } : null;
+  const latency = Date.now() - t0;
+  if (!res.ok) {
+    await log(admin, { automation_id: o.automationId ?? null, provider: "lovable", model: LOVABLE_MODEL, status: "error", http_status: res.status, latency_ms: latency, error: (await res.text().catch(() => "")).slice(0, 300) });
+    return null;
+  }
+  const j = (await res.json()) as any;
+  let text = typeof j.output_text === "string" ? j.output_text : "";
+  if (!text) {
+    for (const item of j.output ?? []) for (const c of item.content ?? []) if (c.type === "output_text") text += c.text ?? "";
+  }
+  const tin = j.usage?.input_tokens ?? 0;
+  const tout = j.usage?.output_tokens ?? 0;
+  await log(admin, { automation_id: o.automationId ?? null, provider: "lovable", model: LOVABLE_MODEL, status: text ? "ok" : "empty", http_status: 200, latency_ms: latency, tokens_in: tin, tokens_out: tout });
+  return text.trim() ? { reply: text.trim(), provider: "lovable", model: LOVABLE_MODEL, tokensIn: tin, tokensOut: tout } : null;
 }
 
-export async function routeChat(admin: Admin, messages: ChatMsg[]) {
-  return (await tryGroq(admin, messages)) ?? (await tryLovable(messages));
+export async function routeChat(admin: Admin, messages: ChatMsg[], opts: Opts = {}) {
+  return (await tryKeys(admin, messages, opts)) ?? (await tryLovable(admin, messages, opts));
 }

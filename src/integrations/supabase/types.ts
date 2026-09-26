@@ -118,27 +118,48 @@ export type Database = {
       audit_logs: {
         Row: {
           actor: string | null
+          after_value: Json | null
           automation_id: string | null
+          before_value: Json | null
           changed_fields: Json
+          client_id: string | null
           created_at: string
           event_type: string
           id: string
+          reason: string | null
+          source_ip: string | null
+          target_id: string
+          target_type: string
         }
         Insert: {
           actor?: string | null
+          after_value?: Json | null
           automation_id?: string | null
+          before_value?: Json | null
           changed_fields?: Json
+          client_id?: string | null
           created_at?: string
           event_type: string
           id?: string
+          reason?: string | null
+          source_ip?: string | null
+          target_id?: string
+          target_type?: string
         }
         Update: {
           actor?: string | null
+          after_value?: Json | null
           automation_id?: string | null
+          before_value?: Json | null
           changed_fields?: Json
+          client_id?: string | null
           created_at?: string
           event_type?: string
           id?: string
+          reason?: string | null
+          source_ip?: string | null
+          target_id?: string
+          target_type?: string
         }
         Relationships: [
           {
@@ -358,6 +379,8 @@ export type Database = {
           hmac_key: string
           id: string
           is_active: boolean
+          last_seen_at: string | null
+          last_seen_origin: string | null
           order_id: string | null
           origin_domain: string
           requires_reinstallation: boolean
@@ -374,6 +397,8 @@ export type Database = {
           hmac_key?: string
           id?: string
           is_active?: boolean
+          last_seen_at?: string | null
+          last_seen_origin?: string | null
           order_id?: string | null
           origin_domain?: string
           requires_reinstallation?: boolean
@@ -390,6 +415,8 @@ export type Database = {
           hmac_key?: string
           id?: string
           is_active?: boolean
+          last_seen_at?: string | null
+          last_seen_origin?: string | null
           order_id?: string | null
           origin_domain?: string
           requires_reinstallation?: boolean
@@ -485,7 +512,10 @@ export type Database = {
           customer_phone_or_id: string | null
           extracted_lead_data: Json
           id: string
+          last_message_at: string
+          origin: string
           status: string
+          visitor_session: string | null
         }
         Insert: {
           audio_recording_url?: string | null
@@ -495,7 +525,10 @@ export type Database = {
           customer_phone_or_id?: string | null
           extracted_lead_data?: Json
           id?: string
+          last_message_at?: string
+          origin?: string
           status?: string
+          visitor_session?: string | null
         }
         Update: {
           audio_recording_url?: string | null
@@ -505,7 +538,10 @@ export type Database = {
           customer_phone_or_id?: string | null
           extracted_lead_data?: Json
           id?: string
+          last_message_at?: string
+          origin?: string
           status?: string
+          visitor_session?: string | null
         }
         Relationships: [
           {
@@ -783,6 +819,11 @@ export type Database = {
           id: string
           is_active: boolean
           label: string
+          last_error: string | null
+          last_error_at: string | null
+          last_success_at: string | null
+          model: string
+          priority: number
           provider: string
           request_count: number
         }
@@ -794,6 +835,11 @@ export type Database = {
           id?: string
           is_active?: boolean
           label?: string
+          last_error?: string | null
+          last_error_at?: string | null
+          last_success_at?: string | null
+          model?: string
+          priority?: number
           provider: string
           request_count?: number
         }
@@ -805,10 +851,75 @@ export type Database = {
           id?: string
           is_active?: boolean
           label?: string
+          last_error?: string | null
+          last_error_at?: string | null
+          last_success_at?: string | null
+          model?: string
+          priority?: number
           provider?: string
           request_count?: number
         }
         Relationships: []
+      }
+      llm_requests: {
+        Row: {
+          automation_id: string | null
+          created_at: string
+          error: string | null
+          http_status: number
+          id: string
+          key_id: string | null
+          latency_ms: number
+          model: string
+          provider: string
+          status: string
+          tokens_in: number
+          tokens_out: number
+        }
+        Insert: {
+          automation_id?: string | null
+          created_at?: string
+          error?: string | null
+          http_status?: number
+          id?: string
+          key_id?: string | null
+          latency_ms?: number
+          model: string
+          provider: string
+          status: string
+          tokens_in?: number
+          tokens_out?: number
+        }
+        Update: {
+          automation_id?: string | null
+          created_at?: string
+          error?: string | null
+          http_status?: number
+          id?: string
+          key_id?: string | null
+          latency_ms?: number
+          model?: string
+          provider?: string
+          status?: string
+          tokens_in?: number
+          tokens_out?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_requests_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "llm_requests_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "llm_api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -1057,6 +1168,30 @@ export type Database = {
           slug?: string
           updated_at?: string
           yearly_discount_pct?: number
+        }
+        Relationships: []
+      }
+      product_prices: {
+        Row: {
+          kind: string
+          option_key: string
+          price: number
+          product: string
+          updated_at: string
+        }
+        Insert: {
+          kind?: string
+          option_key: string
+          price: number
+          product: string
+          updated_at?: string
+        }
+        Update: {
+          kind?: string
+          option_key?: string
+          price?: number
+          product?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1498,9 +1633,29 @@ export type Database = {
       my_origin_domain: { Args: never; Returns: string }
       owns_automation: { Args: { _automation_id: string }; Returns: boolean }
       owns_client_automation: { Args: { _id: string }; Returns: boolean }
+      place_order: {
+        Args: {
+          _channel: string
+          _company: string
+          _country: string
+          _email: string
+          _features: Json
+          _full_name: string
+          _method: string
+          _msg_channels: string[]
+          _product: string
+          _proof: Json
+          _target: string
+        }
+        Returns: string
+      }
       provision_automation: {
         Args: { _automation_id: string }
         Returns: string
+      }
+      record_usage: {
+        Args: { _automation_id: string; _tokens: number }
+        Returns: undefined
       }
       review_order: {
         Args: { _approve: boolean; _order_id: string; _reason: string }
