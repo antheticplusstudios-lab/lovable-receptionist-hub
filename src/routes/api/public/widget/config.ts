@@ -22,28 +22,11 @@ export const Route = createFileRoute("/api/public/widget/config")({
         await admin.from("client_automations").update({ last_seen_at: new Date().toISOString(), last_seen_origin: origin ?? "" }).eq("id", inst.id);
         const c = inst.widget_config ?? {};
         // Only presentation settings leave the server.
-        const pick = (k: string) => c[k];
+        const ALLOWED = ["primary","secondary","accent","glow","size","position","style","speed","amplitude","waveforms","text","title","subtitle","placeholder","autoOpen","mobileHidden","sound","states"];
+        const config: Record<string, unknown> = {};
+        for (const k of ALLOWED) if (c[k] !== undefined) config[k] = c[k];
         return json(
-          {
-            product: inst.automation_type,
-            config: {
-              primaryColor: pick("primaryColor"),
-              accentColor: pick("accentColor"),
-              glow: pick("glow"),
-              size: pick("size"),
-              position: pick("position"),
-              orbStyle: pick("orbStyle"),
-              animationSpeed: pick("animationSpeed"),
-              welcomeMessage: pick("welcomeMessage") ?? pick("greeting"),
-              title: pick("title"),
-              subtitle: pick("subtitle"),
-              placeholder: pick("placeholder"),
-              autoOpen: pick("autoOpen"),
-              mobileHidden: pick("mobileHidden"),
-              sound: pick("sound"),
-              states: pick("states"),
-            },
-          },
+          { product: inst.automation_type, config },
           200,
           origin,
         );
