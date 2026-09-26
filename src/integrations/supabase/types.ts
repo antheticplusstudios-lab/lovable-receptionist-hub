@@ -115,6 +115,41 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          actor: string | null
+          automation_id: string | null
+          changed_fields: Json
+          created_at: string
+          event_type: string
+          id: string
+        }
+        Insert: {
+          actor?: string | null
+          automation_id?: string | null
+          changed_fields?: Json
+          created_at?: string
+          event_type: string
+          id?: string
+        }
+        Update: {
+          actor?: string | null
+          automation_id?: string | null
+          changed_fields?: Json
+          created_at?: string
+          event_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_instances: {
         Row: {
           automation_slug: string
@@ -240,6 +275,38 @@ export type Database = {
           },
         ]
       }
+      automation_tasks: {
+        Row: {
+          automation_id: string
+          config: Json
+          enabled: boolean
+          id: string
+          task_key: string
+        }
+        Insert: {
+          automation_id: string
+          config?: Json
+          enabled?: boolean
+          id?: string
+          task_key: string
+        }
+        Update: {
+          automation_id?: string
+          config?: Json
+          enabled?: boolean
+          id?: string
+          task_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_tasks_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability_windows: {
         Row: {
           automation_id: string
@@ -281,6 +348,72 @@ export type Database = {
           },
         ]
       }
+      client_automations: {
+        Row: {
+          assigned_phone_number: string | null
+          automation_type: string
+          client_id: string
+          created_at: string
+          domain_url: string
+          hmac_key: string
+          id: string
+          is_active: boolean
+          order_id: string | null
+          origin_domain: string
+          requires_reinstallation: boolean
+          script_token: string
+          webhook_url: string
+          widget_config: Json
+        }
+        Insert: {
+          assigned_phone_number?: string | null
+          automation_type: string
+          client_id: string
+          created_at?: string
+          domain_url?: string
+          hmac_key?: string
+          id?: string
+          is_active?: boolean
+          order_id?: string | null
+          origin_domain?: string
+          requires_reinstallation?: boolean
+          script_token?: string
+          webhook_url?: string
+          widget_config?: Json
+        }
+        Update: {
+          assigned_phone_number?: string | null
+          automation_type?: string
+          client_id?: string
+          created_at?: string
+          domain_url?: string
+          hmac_key?: string
+          id?: string
+          is_active?: boolean
+          order_id?: string | null
+          origin_domain?: string
+          requires_reinstallation?: boolean
+          script_token?: string
+          webhook_url?: string
+          widget_config?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_automations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "client_automations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["order_id"]
+          },
+        ]
+      }
       client_tags: {
         Row: {
           created_at: string
@@ -301,6 +434,120 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      conversation_diagnostics: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          created_by: string
+          id: string
+          recommended_fix: string
+          severity: string
+          transcript: string
+          what_went_wrong: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          recommended_fix: string
+          severity?: string
+          transcript: string
+          what_went_wrong: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          recommended_fix?: string
+          severity?: string
+          transcript?: string
+          what_went_wrong?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_diagnostics_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          audio_recording_url: string | null
+          automation_id: string
+          channel: string
+          created_at: string
+          customer_phone_or_id: string | null
+          extracted_lead_data: Json
+          id: string
+          status: string
+        }
+        Insert: {
+          audio_recording_url?: string | null
+          automation_id: string
+          channel: string
+          created_at?: string
+          customer_phone_or_id?: string | null
+          extracted_lead_data?: Json
+          id?: string
+          status?: string
+        }
+        Update: {
+          audio_recording_url?: string | null
+          automation_id?: string
+          channel?: string
+          created_at?: string
+          customer_phone_or_id?: string | null
+          extracted_lead_data?: Json
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crawl_jobs: {
+        Row: {
+          automation_id: string
+          created_at: string
+          id: string
+          status: string
+          target_url: string
+        }
+        Insert: {
+          automation_id: string
+          created_at?: string
+          id?: string
+          status?: string
+          target_url: string
+        }
+        Update: {
+          automation_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+          target_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crawl_jobs_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_leads: {
         Row: {
@@ -445,6 +692,273 @@ export type Database = {
         }
         Relationships: []
       }
+      integration_connections: {
+        Row: {
+          access_token: string
+          automation_id: string
+          id: string
+          provider: string
+          refresh_token: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          automation_id: string
+          id?: string
+          provider: string
+          refresh_token: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          automation_id?: string
+          id?: string
+          provider?: string
+          refresh_token?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_connections_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kb_documents: {
+        Row: {
+          automation_id: string
+          content: string
+          created_at: string
+          embedding: string | null
+          id: string
+          priority: number
+          source_name: string
+          source_type: string
+          storage_path: string | null
+        }
+        Insert: {
+          automation_id: string
+          content?: string
+          created_at?: string
+          embedding?: string | null
+          id?: string
+          priority?: number
+          source_name: string
+          source_type: string
+          storage_path?: string | null
+        }
+        Update: {
+          automation_id?: string
+          content?: string
+          created_at?: string
+          embedding?: string | null
+          id?: string
+          priority?: number
+          source_name?: string
+          source_type?: string
+          storage_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kb_documents_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      llm_api_keys: {
+        Row: {
+          api_key: string
+          cooldown_until: string | null
+          created_at: string
+          error_count: number
+          id: string
+          is_active: boolean
+          label: string
+          provider: string
+          request_count: number
+        }
+        Insert: {
+          api_key: string
+          cooldown_until?: string | null
+          created_at?: string
+          error_count?: number
+          id?: string
+          is_active?: boolean
+          label?: string
+          provider: string
+          request_count?: number
+        }
+        Update: {
+          api_key?: string
+          cooldown_until?: string | null
+          created_at?: string
+          error_count?: number
+          id?: string
+          is_active?: boolean
+          label?: string
+          provider?: string
+          request_count?: number
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+          tokens_used: number
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+          tokens_used?: number
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          tokens_used?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          automation_type: string
+          client_id: string
+          company_name: string
+          contact_email: string
+          country: string
+          created_at: string
+          delivery_channel: string
+          full_name: string
+          id: string
+          order_id: string
+          origin_domain: string
+          payment_method_id: string | null
+          payment_proof_data: Json
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selected_features: Json
+          status: string
+          target_domain_url: string
+          total_amount: number
+        }
+        Insert: {
+          automation_type: string
+          client_id: string
+          company_name?: string
+          contact_email?: string
+          country?: string
+          created_at?: string
+          delivery_channel?: string
+          full_name?: string
+          id?: string
+          order_id?: string
+          origin_domain?: string
+          payment_method_id?: string | null
+          payment_proof_data?: Json
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selected_features?: Json
+          status?: string
+          target_domain_url: string
+          total_amount: number
+        }
+        Update: {
+          automation_type?: string
+          client_id?: string
+          company_name?: string
+          contact_email?: string
+          country?: string
+          created_at?: string
+          delivery_channel?: string
+          full_name?: string
+          id?: string
+          order_id?: string
+          origin_domain?: string
+          payment_method_id?: string | null
+          payment_proof_data?: Json
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selected_features?: Json
+          status?: string
+          target_domain_url?: string
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "orders_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_methods: {
+        Row: {
+          created_at: string
+          id: string
+          instructions: string
+          is_active: boolean
+          is_card: boolean
+          method_name: string
+          required_fields: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instructions: string
+          is_active?: boolean
+          is_card?: boolean
+          method_name: string
+          required_fields?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instructions?: string
+          is_active?: boolean
+          is_card?: boolean
+          method_name?: string
+          required_fields?: Json
+        }
+        Relationships: []
+      }
       payment_submissions: {
         Row: {
           amount: number
@@ -549,33 +1063,42 @@ export type Database = {
       profiles: {
         Row: {
           category: string
+          client_id: string
           company_email: string
           company_name: string
           created_at: string
+          full_name: string
           id: string
           profile_completed: boolean
+          registered_origin_domain: string
           updated_at: string
           user_id: string
           website_url: string
         }
         Insert: {
           category?: string
+          client_id?: string
           company_email?: string
           company_name?: string
           created_at?: string
+          full_name?: string
           id?: string
           profile_completed?: boolean
+          registered_origin_domain?: string
           updated_at?: string
           user_id: string
           website_url?: string
         }
         Update: {
           category?: string
+          client_id?: string
           company_email?: string
           company_name?: string
           created_at?: string
+          full_name?: string
           id?: string
           profile_completed?: boolean
+          registered_origin_domain?: string
           updated_at?: string
           user_id?: string
           website_url?: string
@@ -862,6 +1385,44 @@ export type Database = {
           },
         ]
       }
+      usage_meters: {
+        Row: {
+          automation_id: string
+          billing_period: string
+          call_minutes_used: number
+          id: string
+          sms_count_used: number
+          tokens_used: number
+          updated_at: string
+        }
+        Insert: {
+          automation_id: string
+          billing_period: string
+          call_minutes_used?: number
+          id?: string
+          sms_count_used?: number
+          tokens_used?: number
+          updated_at?: string
+        }
+        Update: {
+          automation_id?: string
+          billing_period?: string
+          call_minutes_used?: number
+          id?: string
+          sms_count_used?: number
+          tokens_used?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_meters_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "client_automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -914,6 +1475,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_manage_client_automation: { Args: { _id: string }; Returns: boolean }
       claim_staff_invite: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -922,11 +1484,26 @@ export type Database = {
         }
         Returns: boolean
       }
+      integration_status: {
+        Args: { _automation_id: string }
+        Returns: {
+          provider: string
+          status: string
+          updated_at: string
+        }[]
+      }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      my_client_id: { Args: never; Returns: string }
+      my_origin_domain: { Args: never; Returns: string }
       owns_automation: { Args: { _automation_id: string }; Returns: boolean }
+      owns_client_automation: { Args: { _id: string }; Returns: boolean }
       provision_automation: {
         Args: { _automation_id: string }
+        Returns: string
+      }
+      review_order: {
+        Args: { _approve: boolean; _order_id: string; _reason: string }
         Returns: string
       }
       review_payment: {
