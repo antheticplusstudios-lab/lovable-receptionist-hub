@@ -14,7 +14,10 @@ export const Route = createFileRoute("/api/public/hooks/lifecycle")({
           console.error("lifecycle failed", error);
           return Response.json({ ok: false }, { status: 500 });
         }
-        return Response.json({ ok: true, ranAt: new Date().toISOString() });
+        const { probeAll } = await import("@/lib/health.server");
+        const origin = (process.env["VITE_APP_URL"] ?? "").replace(/\/$/, "") || new URL(request.url).origin;
+        const health = await probeAll(supabaseAdmin as never, origin);
+        return Response.json({ ok: true, ranAt: new Date().toISOString(), healthChecked: health.length });
       },
     },
   },
