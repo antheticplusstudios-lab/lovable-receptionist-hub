@@ -25,6 +25,7 @@ import { Route as AuthenticatedAdminAutomationsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authenticated.admin.catalog'
 import { Route as AuthenticatedAdminCreatorRouteImport } from './routes/_authenticated.admin.creator'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated.admin.crm'
+import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_authenticated.admin.diagnostics'
 import { Route as AuthenticatedAdminInfrastructureRouteImport } from './routes/_authenticated.admin.infrastructure'
 import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated.admin.knowledge'
 import { Route as AuthenticatedAdminLifecycleRouteImport } from './routes/_authenticated.admin.lifecycle'
@@ -128,6 +129,12 @@ const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
   path: '/crm',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminDiagnosticsRoute =
+  AuthenticatedAdminDiagnosticsRouteImport.update({
+    id: '/diagnostics',
+    path: '/diagnostics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminInfrastructureRoute =
   AuthenticatedAdminInfrastructureRouteImport.update({
     id: '/infrastructure',
@@ -253,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/admin/creator': typeof AuthenticatedAdminCreatorRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
@@ -287,6 +295,7 @@ export interface FileRoutesByTo {
   '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/admin/creator': typeof AuthenticatedAdminCreatorRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
@@ -325,6 +334,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/_authenticated/admin/creator': typeof AuthenticatedAdminCreatorRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
+  '/_authenticated/admin/diagnostics': typeof AuthenticatedAdminDiagnosticsRoute
   '/_authenticated/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/_authenticated/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/creator'
     | '/admin/crm'
+    | '/admin/diagnostics'
     | '/admin/infrastructure'
     | '/admin/knowledge'
     | '/admin/lifecycle'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/creator'
     | '/admin/crm'
+    | '/admin/diagnostics'
     | '/admin/infrastructure'
     | '/admin/knowledge'
     | '/admin/lifecycle'
@@ -434,6 +446,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/catalog'
     | '/_authenticated/admin/creator'
     | '/_authenticated/admin/crm'
+    | '/_authenticated/admin/diagnostics'
     | '/_authenticated/admin/infrastructure'
     | '/_authenticated/admin/knowledge'
     | '/_authenticated/admin/lifecycle'
@@ -585,6 +598,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCrmRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/diagnostics': {
+      id: '/_authenticated/admin/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/admin/diagnostics'
+      preLoaderRoute: typeof AuthenticatedAdminDiagnosticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/infrastructure': {
       id: '/_authenticated/admin/infrastructure'
       path: '/infrastructure'
@@ -727,6 +747,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCatalogRoute: typeof AuthenticatedAdminCatalogRoute
   AuthenticatedAdminCreatorRoute: typeof AuthenticatedAdminCreatorRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
+  AuthenticatedAdminDiagnosticsRoute: typeof AuthenticatedAdminDiagnosticsRoute
   AuthenticatedAdminInfrastructureRoute: typeof AuthenticatedAdminInfrastructureRoute
   AuthenticatedAdminKnowledgeRoute: typeof AuthenticatedAdminKnowledgeRoute
   AuthenticatedAdminLifecycleRoute: typeof AuthenticatedAdminLifecycleRoute
@@ -744,6 +765,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCatalogRoute: AuthenticatedAdminCatalogRoute,
   AuthenticatedAdminCreatorRoute: AuthenticatedAdminCreatorRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
+  AuthenticatedAdminDiagnosticsRoute: AuthenticatedAdminDiagnosticsRoute,
   AuthenticatedAdminInfrastructureRoute: AuthenticatedAdminInfrastructureRoute,
   AuthenticatedAdminKnowledgeRoute: AuthenticatedAdminKnowledgeRoute,
   AuthenticatedAdminLifecycleRoute: AuthenticatedAdminLifecycleRoute,
