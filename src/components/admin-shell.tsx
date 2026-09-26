@@ -41,6 +41,10 @@ export const adminNav = [
   { label: "Pricing Configurator", to: "/admin/pricing", icon: Sparkles, roles: ["owner", "partner"] },
   { label: "Infrastructure & Groq Pool", to: "/admin/infrastructure", icon: ServerCog, roles: ["owner"] },
   { label: "Team & Audit Trail", to: "/admin/team", icon: Users, roles: ["owner", "partner"] },
+  { label: "Live Automations", to: "/admin/receptionist", icon: Bot, roles: ["owner", "partner"] },
+  { label: "Payment Methods", to: "/admin/payment-methods", icon: BadgeDollarSign, roles: ["owner"] },
+  { label: "AI Key Pool", to: "/admin/llm-keys", icon: ServerCog, roles: ["owner"] },
+  { label: "Conversation Diagnostics", to: "/admin/diagnostics", icon: Wand2, roles: ["owner", "partner", "verifier"] },
   { label: "System Settings", to: "/admin/settings", icon: SlidersHorizontal, roles: ["owner"] },
 ] as const;
 

@@ -29,19 +29,24 @@ import { Route as AuthenticatedAdminDiagnosticsRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminInfrastructureRouteImport } from './routes/_authenticated.admin.infrastructure'
 import { Route as AuthenticatedAdminKnowledgeRouteImport } from './routes/_authenticated.admin.knowledge'
 import { Route as AuthenticatedAdminLifecycleRouteImport } from './routes/_authenticated.admin.lifecycle'
+import { Route as AuthenticatedAdminLlmKeysRouteImport } from './routes/_authenticated.admin.llm-keys'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated.admin.orders'
+import { Route as AuthenticatedAdminPaymentMethodsRouteImport } from './routes/_authenticated.admin.payment-methods'
 import { Route as AuthenticatedAdminPricingRouteImport } from './routes/_authenticated.admin.pricing'
+import { Route as AuthenticatedAdminReceptionistRouteImport } from './routes/_authenticated.admin.receptionist'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated.admin.settings'
 import { Route as AuthenticatedAdminTeamRouteImport } from './routes/_authenticated.admin.team'
 import { Route as AuthenticatedAdminVerificationRouteImport } from './routes/_authenticated.admin.verification'
 import { Route as AuthenticatedCheckoutSlugRouteImport } from './routes/_authenticated.checkout.$slug'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated.dashboard.index'
+import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated.dashboard.orders'
 import { Route as AuthenticatedDashboardPaymentsRouteImport } from './routes/_authenticated.dashboard.payments'
 import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated.dashboard.profile'
 import { Route as AuthenticatedOrderProductRouteImport } from './routes/_authenticated.order.$product'
 import { Route as AuthenticatedStaffPaymentsRouteImport } from './routes/_authenticated.staff.payments'
 import { Route as AuthenticatedDashboardAutomationsIndexRouteImport } from './routes/_authenticated.dashboard.automations.index'
 import { Route as AuthenticatedDashboardAutomationsIdRouteImport } from './routes/_authenticated.dashboard.automations.$id'
+import { Route as AuthenticatedDashboardPortalIdRouteImport } from './routes/_authenticated.dashboard.portal.$id'
 import { Route as ApiPublicHooksLifecycleRouteImport } from './routes/api/public/hooks/lifecycle'
 import { Route as ApiPublicWidgetChatRouteImport } from './routes/api/public/widget/chat'
 import { Route as ApiPublicWidgetConfigRouteImport } from './routes/api/public/widget/config'
@@ -154,16 +159,34 @@ const AuthenticatedAdminLifecycleRoute =
     path: '/lifecycle',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminLlmKeysRoute =
+  AuthenticatedAdminLlmKeysRouteImport.update({
+    id: '/llm-keys',
+    path: '/llm-keys',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminOrdersRoute =
   AuthenticatedAdminOrdersRouteImport.update({
     id: '/orders',
     path: '/orders',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminPaymentMethodsRoute =
+  AuthenticatedAdminPaymentMethodsRouteImport.update({
+    id: '/payment-methods',
+    path: '/payment-methods',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPricingRoute =
   AuthenticatedAdminPricingRouteImport.update({
     id: '/pricing',
     path: '/pricing',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminReceptionistRoute =
+  AuthenticatedAdminReceptionistRouteImport.update({
+    id: '/receptionist',
+    path: '/receptionist',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminSettingsRoute =
@@ -193,6 +216,12 @@ const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardOrdersRoute =
+  AuthenticatedDashboardOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardPaymentsRoute =
@@ -229,6 +258,12 @@ const AuthenticatedDashboardAutomationsIdRoute =
   AuthenticatedDashboardAutomationsIdRouteImport.update({
     id: '/automations/$id',
     path: '/automations/$id',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPortalIdRoute =
+  AuthenticatedDashboardPortalIdRouteImport.update({
+    id: '/portal/$id',
+    path: '/portal/$id',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const ApiPublicHooksLifecycleRoute = ApiPublicHooksLifecycleRouteImport.update({
@@ -271,12 +306,16 @@ export interface FileRoutesByFullPath {
   '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/admin/llm-keys': typeof AuthenticatedAdminLlmKeysRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/payment-methods': typeof AuthenticatedAdminPaymentMethodsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/admin/receptionist': typeof AuthenticatedAdminReceptionistRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/team': typeof AuthenticatedAdminTeamRoute
   '/admin/verification': typeof AuthenticatedAdminVerificationRoute
   '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/order/$product': typeof AuthenticatedOrderProductRoute
@@ -284,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/dashboard/portal/$id': typeof AuthenticatedDashboardPortalIdRoute
   '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
   '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
   '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
@@ -307,12 +347,16 @@ export interface FileRoutesByTo {
   '/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/admin/llm-keys': typeof AuthenticatedAdminLlmKeysRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/payment-methods': typeof AuthenticatedAdminPaymentMethodsRoute
   '/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/admin/receptionist': typeof AuthenticatedAdminReceptionistRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/team': typeof AuthenticatedAdminTeamRoute
   '/admin/verification': typeof AuthenticatedAdminVerificationRoute
   '/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/order/$product': typeof AuthenticatedOrderProductRoute
@@ -320,6 +364,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/dashboard/portal/$id': typeof AuthenticatedDashboardPortalIdRoute
   '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
   '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
   '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
@@ -347,12 +392,16 @@ export interface FileRoutesById {
   '/_authenticated/admin/infrastructure': typeof AuthenticatedAdminInfrastructureRoute
   '/_authenticated/admin/knowledge': typeof AuthenticatedAdminKnowledgeRoute
   '/_authenticated/admin/lifecycle': typeof AuthenticatedAdminLifecycleRoute
+  '/_authenticated/admin/llm-keys': typeof AuthenticatedAdminLlmKeysRoute
   '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/_authenticated/admin/payment-methods': typeof AuthenticatedAdminPaymentMethodsRoute
   '/_authenticated/admin/pricing': typeof AuthenticatedAdminPricingRoute
+  '/_authenticated/admin/receptionist': typeof AuthenticatedAdminReceptionistRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/team': typeof AuthenticatedAdminTeamRoute
   '/_authenticated/admin/verification': typeof AuthenticatedAdminVerificationRoute
   '/_authenticated/checkout/$slug': typeof AuthenticatedCheckoutSlugRoute
+  '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
   '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/_authenticated/order/$product': typeof AuthenticatedOrderProductRoute
@@ -360,6 +409,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/automations/$id': typeof AuthenticatedDashboardAutomationsIdRoute
+  '/_authenticated/dashboard/portal/$id': typeof AuthenticatedDashboardPortalIdRoute
   '/api/public/hooks/lifecycle': typeof ApiPublicHooksLifecycleRoute
   '/api/public/widget/chat': typeof ApiPublicWidgetChatRoute
   '/api/public/widget/config': typeof ApiPublicWidgetConfigRoute
@@ -387,12 +437,16 @@ export interface FileRouteTypes {
     | '/admin/infrastructure'
     | '/admin/knowledge'
     | '/admin/lifecycle'
+    | '/admin/llm-keys'
     | '/admin/orders'
+    | '/admin/payment-methods'
     | '/admin/pricing'
+    | '/admin/receptionist'
     | '/admin/settings'
     | '/admin/team'
     | '/admin/verification'
     | '/checkout/$slug'
+    | '/dashboard/orders'
     | '/dashboard/payments'
     | '/dashboard/profile'
     | '/order/$product'
@@ -400,6 +454,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/dashboard/'
     | '/dashboard/automations/$id'
+    | '/dashboard/portal/$id'
     | '/api/public/hooks/lifecycle'
     | '/api/public/widget/chat'
     | '/api/public/widget/config'
@@ -423,12 +478,16 @@ export interface FileRouteTypes {
     | '/admin/infrastructure'
     | '/admin/knowledge'
     | '/admin/lifecycle'
+    | '/admin/llm-keys'
     | '/admin/orders'
+    | '/admin/payment-methods'
     | '/admin/pricing'
+    | '/admin/receptionist'
     | '/admin/settings'
     | '/admin/team'
     | '/admin/verification'
     | '/checkout/$slug'
+    | '/dashboard/orders'
     | '/dashboard/payments'
     | '/dashboard/profile'
     | '/order/$product'
@@ -436,6 +495,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/dashboard/automations/$id'
+    | '/dashboard/portal/$id'
     | '/api/public/hooks/lifecycle'
     | '/api/public/widget/chat'
     | '/api/public/widget/config'
@@ -462,12 +522,16 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/infrastructure'
     | '/_authenticated/admin/knowledge'
     | '/_authenticated/admin/lifecycle'
+    | '/_authenticated/admin/llm-keys'
     | '/_authenticated/admin/orders'
+    | '/_authenticated/admin/payment-methods'
     | '/_authenticated/admin/pricing'
+    | '/_authenticated/admin/receptionist'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/team'
     | '/_authenticated/admin/verification'
     | '/_authenticated/checkout/$slug'
+    | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/payments'
     | '/_authenticated/dashboard/profile'
     | '/_authenticated/order/$product'
@@ -475,6 +539,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/automations/$id'
+    | '/_authenticated/dashboard/portal/$id'
     | '/api/public/hooks/lifecycle'
     | '/api/public/widget/chat'
     | '/api/public/widget/config'
@@ -639,6 +704,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminLifecycleRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/llm-keys': {
+      id: '/_authenticated/admin/llm-keys'
+      path: '/llm-keys'
+      fullPath: '/admin/llm-keys'
+      preLoaderRoute: typeof AuthenticatedAdminLlmKeysRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/orders': {
       id: '/_authenticated/admin/orders'
       path: '/orders'
@@ -646,11 +718,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/payment-methods': {
+      id: '/_authenticated/admin/payment-methods'
+      path: '/payment-methods'
+      fullPath: '/admin/payment-methods'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentMethodsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/pricing': {
       id: '/_authenticated/admin/pricing'
       path: '/pricing'
       fullPath: '/admin/pricing'
       preLoaderRoute: typeof AuthenticatedAdminPricingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/receptionist': {
+      id: '/_authenticated/admin/receptionist'
+      path: '/receptionist'
+      fullPath: '/admin/receptionist'
+      preLoaderRoute: typeof AuthenticatedAdminReceptionistRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/settings': {
@@ -686,6 +772,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/orders': {
+      id: '/_authenticated/dashboard/orders'
+      path: '/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/payments': {
@@ -730,6 +823,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAutomationsIdRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/portal/$id': {
+      id: '/_authenticated/dashboard/portal/$id'
+      path: '/portal/$id'
+      fullPath: '/dashboard/portal/$id'
+      preLoaderRoute: typeof AuthenticatedDashboardPortalIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/api/public/hooks/lifecycle': {
       id: '/api/public/hooks/lifecycle'
       path: '/api/public/hooks/lifecycle'
@@ -771,8 +871,11 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminInfrastructureRoute: typeof AuthenticatedAdminInfrastructureRoute
   AuthenticatedAdminKnowledgeRoute: typeof AuthenticatedAdminKnowledgeRoute
   AuthenticatedAdminLifecycleRoute: typeof AuthenticatedAdminLifecycleRoute
+  AuthenticatedAdminLlmKeysRoute: typeof AuthenticatedAdminLlmKeysRoute
   AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+  AuthenticatedAdminPaymentMethodsRoute: typeof AuthenticatedAdminPaymentMethodsRoute
   AuthenticatedAdminPricingRoute: typeof AuthenticatedAdminPricingRoute
+  AuthenticatedAdminReceptionistRoute: typeof AuthenticatedAdminReceptionistRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminTeamRoute: typeof AuthenticatedAdminTeamRoute
   AuthenticatedAdminVerificationRoute: typeof AuthenticatedAdminVerificationRoute
@@ -789,8 +892,11 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminInfrastructureRoute: AuthenticatedAdminInfrastructureRoute,
   AuthenticatedAdminKnowledgeRoute: AuthenticatedAdminKnowledgeRoute,
   AuthenticatedAdminLifecycleRoute: AuthenticatedAdminLifecycleRoute,
+  AuthenticatedAdminLlmKeysRoute: AuthenticatedAdminLlmKeysRoute,
   AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+  AuthenticatedAdminPaymentMethodsRoute: AuthenticatedAdminPaymentMethodsRoute,
   AuthenticatedAdminPricingRoute: AuthenticatedAdminPricingRoute,
+  AuthenticatedAdminReceptionistRoute: AuthenticatedAdminReceptionistRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminTeamRoute: AuthenticatedAdminTeamRoute,
   AuthenticatedAdminVerificationRoute: AuthenticatedAdminVerificationRoute,
@@ -801,20 +907,24 @@ const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardOrdersRoute: typeof AuthenticatedDashboardOrdersRoute
   AuthenticatedDashboardPaymentsRoute: typeof AuthenticatedDashboardPaymentsRoute
   AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedDashboardAutomationsIdRoute: typeof AuthenticatedDashboardAutomationsIdRoute
+  AuthenticatedDashboardPortalIdRoute: typeof AuthenticatedDashboardPortalIdRoute
   AuthenticatedDashboardAutomationsIndexRoute: typeof AuthenticatedDashboardAutomationsIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardOrdersRoute: AuthenticatedDashboardOrdersRoute,
     AuthenticatedDashboardPaymentsRoute: AuthenticatedDashboardPaymentsRoute,
     AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
     AuthenticatedDashboardAutomationsIdRoute:
       AuthenticatedDashboardAutomationsIdRoute,
+    AuthenticatedDashboardPortalIdRoute: AuthenticatedDashboardPortalIdRoute,
     AuthenticatedDashboardAutomationsIndexRoute:
       AuthenticatedDashboardAutomationsIndexRoute,
   }
